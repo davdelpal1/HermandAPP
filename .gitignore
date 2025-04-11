@@ -1,0 +1,30 @@
+# Node
+node_modules/
+*.log
+
+# macOS
+.DS_Store
+
+# Expo / React Native
+.expo/
+.expo-shared/
+web-build/
+android/
+ios/
+*.apk
+
+# VS Code
+.vscode/
+
+# Next.js
+.next/
+out/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# TypeScript
+*.tsbuildinfo
