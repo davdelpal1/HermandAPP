@@ -28,8 +28,11 @@ Antes de iniciar, asegúrate de contar con los siguientes requisitos:
     npm install
     ```
 
-3. **Configurar variables de entorno**  
-    Crea un archivo `.env` en la raíz del proyecto y configura las variables necesarias según el archivo `.env.example`.
+3. **Generar el servidor de producción**  
+    Ejecuta el siguiente comando para iniciar el servidor de producción:
+    ```bash
+    npm run build
+    ```
 
 4. **Iniciar el servidor de desarrollo**  
     Ejecuta el siguiente comando para iniciar la aplicación web:
