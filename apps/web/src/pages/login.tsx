@@ -42,7 +42,7 @@ const Login = () => {
           Registro
         </a>
       </header>
-      <main className="p-4 md:p-10" style={{ background: '#f4f6f8' }}>
+      <main className="p-2 md:p-4" style={{ background: '#f4f6f8' }}>
         <section id="hermandapp" className="text-center py-10">
           <h2 className="text-3xl font-bold mb-4">Bienvenido a HermandAPP</h2>
           <p className="text-xl mb-4">Inicia sesión para acceder a todas las funcionalidades.</p>
@@ -94,7 +94,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: 'calc(100vh - 100px)', // Reducido para disminuir el espacio
+    minHeight: '50vh',
+    paddingBottom: '2rem',
     background: '#f4f6f8',
     paddingTop: '0px', // Reducido al mínimo
   },
