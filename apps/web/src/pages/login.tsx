@@ -71,8 +71,8 @@ const Login = () => {
               {error && <p style={styles.error}>{error}</p>}
             </form>
             <div style={styles.links}>
-              <a href="#">¿Olvidaste tu contraseña?</a><br />
-              <a href="#">Crear cuenta</a>
+              <a href="../forgotPassword">¿Olvidaste tu contraseña?</a><br />
+              <a href="../register">Crear cuenta</a>
             </div>
           </div>
         </div>
