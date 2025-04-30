@@ -3,6 +3,7 @@ import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';  
 import Image from 'next/image';
 import logo from '../assets/images/Logo.jpg';
+import Link from 'next/link';
 
 // Configura tu proyecto de Firebase aquí
 const firebaseConfig = {
@@ -37,7 +38,9 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-white font-sans text-black">
       <header className="flex items-center justify-between p-10 shadow bg-[#191970] text-white">
-        <Image src={logo} alt="Logo HermandApp" width={300} />
+        <Link href="/" passHref>
+          <Image src={logo} alt="Logo HermandApp" width={300} />
+        </Link>
         <a href="../register" className="btn text-xl font-bold px-6 py-3 bg-[#800000] text-white rounded-lg hover:bg-[#990000]">
           Registro
         </a>
