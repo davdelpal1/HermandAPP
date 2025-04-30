@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
+import Image from 'next/image';
+import logo from '../assets/images/Logo.jpg';
 
 // Configura tu proyecto de Firebase aquí
 const firebaseConfig = {
@@ -39,56 +41,81 @@ const Register = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.box}>
-        <h2 style={{ textAlign: 'center' }}>Crear cuenta</h2>
-        <form onSubmit={handleRegister}>
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Confirmar contraseña"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            style={styles.input}
-            required
-          />
-          <button type="submit" style={styles.button}>Registrarse</button>
-          {error && <p style={styles.error}>{error}</p>}
-        </form>
-      </div>
+    <div className="min-h-screen bg-white font-sans text-black">
+      <header className="flex items-center justify-between p-10 shadow bg-[#191970] text-white">
+        <Image src={logo} alt="Logo HermandApp" width={300} />
+        <a href="../login" className="btn text-xl font-bold px-6 py-3 bg-[#800000] text-white rounded-lg hover:bg-[#990000]">
+          Acceso
+        </a>
+      </header>
+      <main className="p-2 md:p-4" style={{ background: '#f4f6f8' }}>
+        <section id="hermandapp" className="text-center py-10">
+          <h2 className="text-3xl font-bold mb-4">Bienvenido a HermandAPP</h2>
+          <p className="text-xl mb-4">Inicia sesión para acceder a todas las funcionalidades.</p>
+        </section>
+        <div style={styles.container}>
+          <div style={styles.box}>
+            <h2 style={{ textAlign: 'center' }}>Crear cuenta</h2>
+            <form onSubmit={handleRegister}>
+              <input
+                type="email"
+                placeholder="Correo electrónico"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={styles.input}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                style={styles.input}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Confirmar contraseña"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                style={styles.input}
+                required
+              />
+              <button type="submit" style={styles.button}>Registrarse</button>
+              {error && <p style={styles.error}>{error}</p>}
+            </form>
+          </div>
+        </div>
+        </main>
+      <footer className="bg-[#191970] text-white text-center py-10">
+        <p className="text-lg mb-4">¿Tienes alguna duda?</p>
+        <a href="mailto:delgado.pallares.david@gmail.com" className="btn text-xl font-bold px-6 py-3 bg-[#800000] text-white rounded-lg hover:bg-[#990000]">
+          Contacta con nosotros
+        </a>
+        <div className="my-8"></div>
+        <p className="text-center text-sm">Desarrollado por David Delgado Pallares</p>
+      </footer>
     </div>
   );
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
-    minHeight: '100vh',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    minHeight: '50vh',
+    paddingBottom: '2rem',
     background: '#f4f6f8',
+    paddingTop: '0px', // Reducido al mínimo
   },
   box: {
-    background: '#fff',
+    background: '#f4f6f8',
+    color: 'black',
     padding: '2rem',
     borderRadius: '12px',
     boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-    width: '300px',
+    width: '320px',
   },
   input: {
     width: '100%',
