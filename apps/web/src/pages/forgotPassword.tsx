@@ -39,9 +39,9 @@ const ForgotPassword = () => {
         <Link href="/" passHref>
           <Image src={logo} alt="Logo HermandApp" width={300} />
         </Link>
-        <a href="../login" className="btn text-xl font-bold px-6 py-3 bg-[#800000] text-white rounded-lg hover:bg-[#990000]">
+        <Link href="../login" className="btn text-xl font-bold px-6 py-3 bg-[#800000] text-white rounded-lg hover:bg-[#990000]">
           Acceso
-        </a>
+        </Link>
       </header>
       <main className="p-2 md:p-4" style={{ background: '#f4f6f8' }}>
         <section id="hermandapp" className="text-center py-10">
@@ -68,9 +68,9 @@ const ForgotPassword = () => {
       </main>
       <footer className="bg-[#191970] text-white text-center py-10">
         <p className="text-lg mb-4">¿Tienes alguna duda?</p>
-        <a href="mailto:delgado.pallares.david@gmail.com" className="btn text-xl font-bold px-6 py-3 bg-[#800000] text-white rounded-lg hover:bg-[#990000]">
+        <Link href="mailto:delgado.pallares.david@gmail.com" className="btn text-xl font-bold px-6 py-3 bg-[#800000] text-white rounded-lg hover:bg-[#990000]">
           Contacta con nosotros
-        </a>
+        </Link>
         <div className="my-8"></div>
         <p className="text-center text-sm">Desarrollado por David Delgado Pallares</p>
       </footer>

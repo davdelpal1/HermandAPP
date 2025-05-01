@@ -1,43 +1,36 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
 
-const Dashboard: React.FC = () => {
-    return (
-        <div className="dashboard-container">
-            <header className="dashboard-header">
-                <h1>Panel de Control</h1>
-            </header>
-            <main className="dashboard-main">
-                <section className="dashboard-section">
-                    <h2>Estadísticas</h2>
-                    <div className="stats-grid">
-                        <div className="stat-card">
-                            <h3>Usuarios</h3>
-                            <p>120</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Eventos</h3>
-                            <p>15</p>
-                        </div>
-                        <div className="stat-card">
-                            <h3>Donaciones</h3>
-                            <p>€1,200</p>
-                        </div>
-                    </div>
-                </section>
-                <section className="dashboard-section">
-                    <h2>Últimos Movimientos</h2>
-                    <ul className="movements-list">
-                        <li>Juan Pérez realizó una donación de €50</li>
-                        <li>Evento "Cena Benéfica" creado</li>
-                        <li>María López se registró como usuario</li>
-                    </ul>
-                </section>
-            </main>
-            <footer className="dashboard-footer">
-                <p>© 2023 HermandAPP</p>
-            </footer>
-        </div>
-    );
-};
+// Configura tu proyecto de Firebase aquí
+const firebaseConfig = {
+    apiKey: "AIzaSyBa48T8X9LC95zI5lKZpOAD5DalmGuCytI",
+    authDomain: "hermandapp-bed16.firebaseapp.com",
+    projectId: "hermandapp-bed16",
+    storageBucket: "hermandapp-bed16.firebasestorage.app",
+    messagingSenderId: "326574651601",
+    appId: "1:326574651601:web:fc34c05902155f2b322df0"
+  };
 
-export default Dashboard;
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+export default function Dashboard() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      if (!user) {
+        router.push('/login');
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
+
+  return (
+    <div>
+      <h1>Bienvenido al Dashboard</h1>
+    </div>
+  );
+}
