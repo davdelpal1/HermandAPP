@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';  
-import Image from 'next/image';
-import logo from '../assets/images/Logo.jpg';
+import Layout from '@/components/Layout';
 import Link from 'next/link';
 
 // Configura tu proyecto de Firebase aquí
@@ -37,57 +36,43 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-white font-sans text-black">
-      <header className="flex items-center justify-between p-10 shadow bg-[#191970] text-white">
-        <Link href="/" passHref>
-          <Image src={logo} alt="Logo HermandApp" width={300} />
-        </Link>
-        <Link href="../register" className="btn text-xl font-bold px-6 py-3 bg-[#800000] text-white rounded-lg hover:bg-[#990000]">
-          Registro
-        </Link>
-      </header>
-      <main className="p-2 md:p-4" style={{ background: '#f4f6f8' }}>
-        <section id="hermandapp" className="text-center py-10">
-          <h2 className="text-3xl font-bold mb-4">Bienvenido a HermandAPP</h2>
-          <p className="text-xl mb-4">Inicia sesión para acceder a todas las funcionalidades.</p>
-        </section>
-        <div style={styles.container}>
-          <div style={styles.loginBox}>
-            <h2 style={{ textAlign: 'center', fontWeight: 'bold' }}>Iniciar sesión</h2>
-            <form onSubmit={handleLogin}>
-              <input
-                type="email"
-                placeholder="Correo electrónico"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={styles.input}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                style={styles.input}
-                required
-              />
-              <button type="submit" style={styles.button}>Entrar</button>
-              {error && <p style={styles.error}>{error}</p>}
-            </form>
-            <div style={styles.links}>
-              <Link href="../forgotPassword">¿Olvidaste tu contraseña?</Link><br />
-              <Link href="../register">Crear cuenta</Link>
+      <Layout>
+        <main className="p-2 md:p-4" style={{ background: '#f4f6f8' }}>
+          <section id="hermandapp" className="text-center py-10">
+            <h2 className="text-3xl font-bold mb-4">Bienvenido a HermandAPP</h2>
+            <p className="text-xl mb-4">Inicia sesión para acceder a todas las funcionalidades.</p>
+          </section>
+          <div style={styles.container}>
+            <div style={styles.loginBox}>
+              <h2 style={{ textAlign: 'center', fontWeight: 'bold' }}>Iniciar sesión</h2>
+              <form onSubmit={handleLogin}>
+                <input
+                  type="email"
+                  placeholder="Correo electrónico"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  style={styles.input}
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder="Contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  style={styles.input}
+                  required
+                />
+                <button type="submit" style={styles.button}>Entrar</button>
+                {error && <p style={styles.error}>{error}</p>}
+              </form>
+              <div style={styles.links}>
+                <Link href="../forgotPassword">¿Olvidaste tu contraseña?</Link><br />
+                <Link href="../register">Crear cuenta</Link>
+              </div>
             </div>
           </div>
-        </div>
-      </main>
-      <footer className="bg-[#191970] text-white text-center py-10">
-        <p className="text-lg mb-4">¿Tienes alguna duda?</p>
-        <Link href="mailto:delgado.pallares.david@gmail.com" className="btn text-xl font-bold px-6 py-3 bg-[#800000] text-white rounded-lg hover:bg-[#990000]">
-          Contacta con nosotros
-        </Link>
-        <div className="my-8"></div>
-        <p className="text-center text-sm">Desarrollado por David Delgado Pallares</p>
-      </footer>
+        </main>
+      </Layout>
     </div>
   );
 };

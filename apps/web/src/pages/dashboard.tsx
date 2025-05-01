@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
+import Layout from '@/components/Layout';
 
 // Configura tu proyecto de Firebase aquí
 const firebaseConfig = {
@@ -29,8 +30,10 @@ export default function Dashboard() {
   }, [router]);
 
   return (
-    <div>
-      <h1>Bienvenido al Dashboard</h1>
+    <div className="min-h-screen bg-white font-sans text-black">
+      <Layout>
+        <h1>Bienvenido al Dashboard</h1>
+      </Layout>
     </div>
   );
 }
