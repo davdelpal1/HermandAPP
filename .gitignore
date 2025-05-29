@@ -28,3 +28,6 @@ out/
 
 # TypeScript
 *.tsbuildinfo
+
+# Turbo
+.turbo/
