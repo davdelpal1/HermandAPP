@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
-import Image from 'next/image';
-import logo from '../assets/images/Logo.jpg';
-import Link from 'next/link';
 import Layout from '@/components/Layout';
 
 // Configura tu proyecto de Firebase aquí
@@ -29,8 +26,12 @@ const ForgotPassword = () => {
     try {
       await sendPasswordResetEmail(auth, email);
       setMessage('Correo de recuperación enviado.');
-    } catch (err: any) {
-      setMessage(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setMessage(err.message);
+      } else {
+        setMessage('Ocurrió un error inesperado.');
+      }
     }
   };
 

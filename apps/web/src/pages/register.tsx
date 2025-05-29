@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
-import Image from 'next/image';
-import logo from '../assets/images/Logo.jpg';
-import Link from 'next/link';
 import Layout from '@/components/Layout';
 
 // Configura tu proyecto de Firebase aquí
@@ -37,8 +34,12 @@ const Register = () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       window.location.href = '/dashboard';
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Ocurrió un error inesperado.');
+      }
     }
   };
 

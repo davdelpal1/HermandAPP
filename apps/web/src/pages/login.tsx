@@ -29,8 +29,13 @@ const Login = () => {
       await signInWithEmailAndPassword(auth, email, password);
       // Redirige si quieres
       window.location.href = '/dashboard';
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      // Manejo de errores
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('Ocurrió un error inesperado.');
+      }
     }
   };
 

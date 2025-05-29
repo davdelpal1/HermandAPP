@@ -67,9 +67,6 @@ const Dashboard = () => {
           <div className="flex items-center gap-4">
             {user && (
               <>
-                <span className="text-sm font-semibold uppercase">
-                  {user.displayName || 'USUARIO'}
-                </span>
                 <span className="text-sm">{user.email}</span>
                 <button
                   onClick={handleLogout}
@@ -85,31 +82,10 @@ const Dashboard = () => {
         {/* Content */}
         <main className="p-6 overflow-auto">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Bienvenido a <span className="text-red-700">HERMANDAPP</span></h1>
-          <h2 className="text-lg font-semibold text-gray-700 mb-4">
-            Bienvenido {user?.displayName || 'Hermano/a'}
-          </h2>
-          <p className="mb-4">
-            Para acceder a todas las funcionalidades que ofrece HermandApp como estadísticas,
-            comparativas o la aplicación para hermanos y colaboradores, actualiza tu plan actual.
-            Consulta todos los planes disponibles en{' '}
-            <a href="https://hermandapp.io/#planes" className="text-red-600 underline">https://hermandapp.io/#planes</a>
-          </p>
-          <p className="mb-8">
-            Si quieres actualizar tu plan envíanos un email a <a href="mailto:contacto@hermandapp.io" className="text-blue-700 underline">contacto@hermandapp.io</a>
-          </p>
 
           {/* Dashboard previews */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white p-4 shadow rounded">
-              <h3 className="text-lg font-bold mb-2">Panel de administración</h3>
-              <p className="text-sm mb-2 text-gray-600">Panel de administración más completo</p>
-              <Image src={dashboardPreview} alt="Panel administración" className="rounded" />
-            </div>
-            <div className="bg-white p-4 shadow rounded">
-              <h3 className="text-lg font-bold mb-2">Panel de miembros</h3>
-              <p className="text-sm mb-2 text-gray-600">Panel de hermanos y colaboradores</p>
-              <Image src={dashboardPreview} alt="Panel miembros" className="rounded" />
-            </div>
+          <div className="flex justify-center items-center h-full">
+            <Image src={dashboardPreview} alt="Panel administración" className="rounded w-full h-full object-cover" />
           </div>
         </main>
       </div>

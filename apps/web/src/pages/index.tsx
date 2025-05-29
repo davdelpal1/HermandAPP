@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from '../assets/images/Logo.jpg';
 import SanAgustin from '../assets/images/SanAgustin.jpg';
 import SantoEntierro from '../assets/images/SantoEntierro.jpg';
 import TresCaidas from '../assets/images/TresCaidas.jpg';
@@ -51,7 +50,7 @@ export default function Home() {
                   <div className="flex-shrink-0 w-full max-w-sm bg-white p-6 rounded-2xl shadow-lg" style={{ scrollSnapAlign: 'start' }}>
                     <Image src={SanAgustin} alt="Hermandad de San Agustín" className="w-full h-auto rounded-lg mb-4" />
                     <p className="text-gray-700 italic mb-4">
-                      "Un software sencillo, intuitivo y con todas las funcionalidades que necesitamos. Gran soporte y mejoras constantes. ¡Recomendado al 100%!"
+                      Un software sencillo, intuitivo y con todas las funcionalidades que necesitamos. Gran soporte y mejoras constantes. ¡Recomendado al 100%!
                     </p>
                     <div className="text-center font-bold text-gray-900">Hermandad de San Agustín (Granada)</div>
                   </div>
@@ -60,7 +59,7 @@ export default function Home() {
                   <div className="flex-shrink-0 w-full max-w-sm bg-white p-6 rounded-2xl shadow-lg" style={{ scrollSnapAlign: 'start' }}>
                     <Image src={SantoEntierro} alt="Hermandad del Santo Entierro" className="w-full h-auto rounded-lg mb-4" />
                     <p className="text-gray-700 italic mb-4">
-                      "HermandApp ha sido una revolución en nuestra organización interna. Fácil de usar y con un equipo detrás que escucha nuestras sugerencias."
+                      HermandApp ha sido una revolución en nuestra organización interna. Fácil de usar y con un equipo detrás que escucha nuestras sugerencias.
                     </p>
                     <div className="text-center font-bold text-gray-900">Hermandad del Santo Entierro (Sevilla)</div>
                   </div>
@@ -69,7 +68,7 @@ export default function Home() {
                   <div className="flex-shrink-0 w-full max-w-sm bg-white p-6 rounded-2xl shadow-lg" style={{ scrollSnapAlign: 'start' }}>
                     <Image src={TresCaidas} alt="Hermandad de la Esperanza de Triana" className="w-full h-auto rounded-lg mb-4" />
                     <p className="text-gray-700 italic mb-4">
-                      "Gracias a HermandApp, la gestión de hermanos, cuotas y papeletas de sitio nunca había sido tan ágil. Muy recomendable."
+                      Gracias a HermandApp, la gestión de hermanos, cuotas y papeletas de sitio nunca había sido tan ágil. Muy recomendable.
                     </p>
                     <div className="text-center font-bold text-gray-900">Hermandad de la Esperanza de Triana (Sevilla)</div>
                   </div>
@@ -78,7 +77,7 @@ export default function Home() {
                   <div className="flex-shrink-0 w-full max-w-sm bg-white p-6 rounded-2xl shadow-lg" style={{ scrollSnapAlign: 'start' }}>
                     <Image src={Macarena} alt="Hermandad de la Esperanza Macarena" className="w-full h-auto rounded-lg mb-4" />
                     <p className="text-gray-700 italic mb-4">
-                      "HermandApp ha transformado nuestra forma de trabajar. La gestión de eventos y actividades es mucho más sencilla y eficiente."
+                      HermandApp ha transformado nuestra forma de trabajar. La gestión de eventos y actividades es mucho más sencilla y eficiente.
                     </p>
                     <div className="text-center font-bold text-gray-900">Hermandad de la Esperanza Macarena (Sevilla)</div>
                   </div>
