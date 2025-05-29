@@ -20,6 +20,7 @@ const auth = getAuth(app);
 const Dashboard = () => {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -66,15 +67,39 @@ const Dashboard = () => {
           <div></div>
           <div className="flex items-center gap-4">
             {user && (
-              <>
-                <span className="text-sm">{user.email}</span>
-                <button
-                  onClick={handleLogout}
-                  className="text-xs bg-white text-red-700 px-3 py-1 rounded hover:bg-gray-200"
-                >
-                  Cerrar sesión
-                </button>
-              </>
+              <div className="relative">
+          <button
+            className="text-sm flex items-center gap-2 focus:outline-none"
+            onClick={() => setShowDropdown((prev) => !prev)}
+          >
+            {user.email}
+            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          {showDropdown && (
+            <div className="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded shadow z-10">
+              <button
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                onClick={() => {
+            setShowDropdown(false);
+            router.push('/profile');
+                }}
+              >
+                Ver perfil
+              </button>
+              <button
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                onClick={() => {
+            setShowDropdown(false);
+            handleLogout();
+                }}
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          )}
+              </div>
             )}
           </div>
         </header>
