@@ -72,7 +72,7 @@ const Dashboard = () => {
             className="text-sm flex items-center gap-2 focus:outline-none"
             onClick={() => setShowDropdown((prev) => !prev)}
           >
-            {user.email}
+            {user.displayName || user.email}
             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
@@ -86,7 +86,7 @@ const Dashboard = () => {
             router.push('/profile');
                 }}
               >
-                Ver perfil
+                Mi perfil
               </button>
               <button
                 className="block w-full text-left px-4 py-2 hover:bg-gray-100"
