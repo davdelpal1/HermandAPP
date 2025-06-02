@@ -35,7 +35,7 @@ export default function ProfilePage() {
           userName: data.userName || currentUser.displayName || "",
           email: data.email || currentUser.email || "",
           phone: data.phone || "",
-          avatar: data.avatar || currentUser.photoURL || "/user-avatar.png",
+          avatar: data.avatar || currentUser.photoURL || '',
           avatarFile: null,
           group: data.group || ""
         };
@@ -46,50 +46,52 @@ export default function ProfilePage() {
     return () => unsubscribe();
   }, [router]);
 
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+        setEditableUser(prev => prev ? {
+        ...prev,
+        avatar: URL.createObjectURL(file), // Solo para previsualización
+        avatarFile: file,
+        } : null);
+    }
+  };
+
   const handleSave = async () => {
     if (!auth.currentUser || !editableUser) return;
     try {
-      setUploading(true);
-      let avatarURL = editableUser.avatar;
-      if (editableUser.avatarFile) {
+        setUploading(true);
+        let avatarURL = editableUser.avatar;
+        // Solo sube si hay un archivo nuevo
+        if (editableUser.avatarFile) {
         const avatarRef = ref(storage, `avatars/${auth.currentUser.uid}`);
         await uploadBytes(avatarRef, editableUser.avatarFile);
         avatarURL = await getDownloadURL(avatarRef);
-      }
+        }
 
-      await setDoc(doc(db, "users", auth.currentUser.uid), {
+        await setDoc(doc(db, "users", auth.currentUser.uid), {
         name: editableUser.name,
         userName: editableUser.userName,
         phone: editableUser.phone,
         avatar: avatarURL,
         email: editableUser.email,
         group: editableUser.group || ""
-      }, { merge: true });
+        }, { merge: true });
 
-      setUser({ ...editableUser, avatar: avatarURL });
-      setEditableUser(prev => prev ? { ...prev, avatar: avatarURL, avatarFile: null } : null);
+        // Actualiza el estado con la URL de Firebase, no la temporal
+        setUser({ ...editableUser, avatar: avatarURL, avatarFile: null });
+        setEditableUser(prev => prev ? { ...prev, avatar: avatarURL, avatarFile: null } : null);
 
-      alert("Perfil actualizado correctamente.");
+        alert("Perfil actualizado correctamente.");
     } catch (error: unknown) {
         console.error("Error al guardar:", error);
         if (error instanceof Error) {
-            alert(`Ocurrió un error al guardar: ${error.message}`);
+        alert(`Ocurrió un error al guardar: ${error.message}`);
         } else {
-            alert("Ocurrió un error al guardar.");
+        alert("Ocurrió un error al guardar.");
         }
     } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setEditableUser(prev => prev ? {
-        ...prev,
-        avatar: URL.createObjectURL(file),
-        avatarFile: file,
-      } : null);
+        setUploading(false);
     }
   };
 
@@ -141,9 +143,9 @@ export default function ProfilePage() {
                 {uploading ? "Guardando..." : "Guardar cambios"}
               </button>
             </div>
-            <div className="bg-white text-black p-4 rounded shadow">
+            <div className="bg-white text-black font-bold p-4 rounded shadow">
               <label>Foto de perfil</label>
-              <Image src={editableUser.avatar || "/user-avatar.png"} alt="Avatar" width={120} height={120} className="rounded-full mb-2" />
+              <Image src={editableUser.avatar || "/user-avatar.png"} alt="Avatar" width={200} height={200} className="rounded-full mb-2" />
               <input type="file" accept="image/*" onChange={handleAvatarChange} />
               {editableUser.avatarFile && <p className="text-sm text-black mt-2">Archivo seleccionado: {editableUser.avatarFile.name}</p>}
             </div>

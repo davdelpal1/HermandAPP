@@ -33,7 +33,7 @@ const Dashboard = () => {
             userName: data.userName || currentUser.displayName || '',
             email: currentUser.email || '',
             phone: data.phone || '',
-            avatar: data.avatar || currentUser.photoURL || '/user-avatar.png',
+            avatar: data.avatar || currentUser.photoURL || '',
           });
         } catch (error) {
           console.error("Error al cargar los datos del usuario:", error);
@@ -42,7 +42,7 @@ const Dashboard = () => {
             userName: currentUser.displayName || '',
             email: currentUser.email || '',
             phone: '',
-            avatar: currentUser.photoURL || '/user-avatar.png',
+            avatar: currentUser.photoURL || '',
           });
         } finally {
           setLoading(false);

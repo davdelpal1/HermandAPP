@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import Layout from '@/components/Layout';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // Configura tu proyecto de Firebase aquí
 const firebaseConfig = {
@@ -11,16 +13,21 @@ const firebaseConfig = {
     storageBucket: "hermandapp-bed16.firebasestorage.app",
     messagingSenderId: "326574651601",
     appId: "1:326574651601:web:fc34c05902155f2b322df0"
-  };
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 const Register = () => {
+  const [name, setName] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +39,25 @@ const Register = () => {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      let avatarURL = '';
+      if (avatarFile) {
+        const storage = getStorage(app);
+        const avatarRef = ref(storage, `avatars/${user.uid}`);
+        await uploadBytes(avatarRef, avatarFile);
+        avatarURL = await getDownloadURL(avatarRef);
+      }
+
+      await setDoc(doc(db, "users", user.uid), {
+        name,
+        userName,
+        email,
+        phone,
+        avatar: avatarURL,
+        uid: user.uid,
+      });
       window.location.href = '/dashboard';
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -49,39 +74,91 @@ const Register = () => {
         <main className="p-2 md:p-4" style={{ background: '#f4f6f8' }}>
           <section id="hermandapp" className="text-center py-10">
             <h2 className="text-3xl font-bold mb-4">Bienvenido a HermandAPP</h2>
-            <p className="text-xl mb-4">Inicia sesión para acceder a todas las funcionalidades.</p>
+            <p className="text-xl mb-4">Regístrate para acceder a todas las funcionalidades.</p>
           </section>
           <div style={styles.container}>
             <div style={styles.box}>
-              <h2 style={{ textAlign: 'center' }}>Crear cuenta</h2>
-              <form onSubmit={handleRegister}>
+              <h2 className="text-2xl font-bold mb-4 text-center">Crear Cuenta</h2>
+                <form onSubmit={handleRegister}>
+                <label style={{ fontWeight: 'bold' }}>
+                  Nombre y apellidos <span className=" text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  style={styles.input}
+                  required
+                />
+
+                <label style={{ fontWeight: 'bold' }}>
+                  Nombre de usuario <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  style={styles.input}
+                  required
+                />
+
+                <label style={{ fontWeight: 'bold' }}>
+                  Correo electrónico <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="email"
-                  placeholder="Correo electrónico"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   style={styles.input}
                   required
                 />
+
+                <label style={{ fontWeight: 'bold' }}>
+                  Teléfono <span className="text-red-600">*</span>
+                </label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  style={styles.input}
+                  required
+                />
+
+                <label style={{ fontWeight: 'bold' }}>
+                  Foto de perfil
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={styles.input}
+                  onChange={e => setAvatarFile(e.target.files?.[0] || null)}
+                />
+
+                <label style={{ fontWeight: 'bold' }}>
+                  Contraseña <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="password"
-                  placeholder="Contraseña"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   style={styles.input}
                   required
                 />
+
+                <label style={{ fontWeight: 'bold' }}>
+                  Confirmar contraseña <span className="text-red-600">*</span>
+                </label>
                 <input
                   type="password"
-                  placeholder="Confirmar contraseña"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   style={styles.input}
                   required
                 />
+
                 <button type="submit" style={styles.button}>Registrarse</button>
                 {error && <p style={styles.error}>{error}</p>}
-              </form>
+                </form>
             </div>
           </div>
         </main>
@@ -98,7 +175,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     minHeight: '50vh',
     paddingBottom: '2rem',
     background: '#f4f6f8',
-    paddingTop: '0px', // Reducido al mínimo
+    paddingTop: '0px',
   },
   box: {
     background: '#f4f6f8',
