@@ -1,46 +1,67 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { initializeApp } from 'firebase/app';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../lib/firebase';
 import Image from 'next/image';
-import dashboardPreview from '../assets/images/dashboard-preview.png'; // Usa tu propia imagen
+import dashboardPreview from '../assets/images/dashboard-preview.png';
+import UserDropdown from '@/components/UserDropdown';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyBa48T8X9LC95zI5lKZpOAD5DalmGuCytI",
-    authDomain: "hermandapp-bed16.firebaseapp.com",
-    projectId: "hermandapp-bed16",
-    storageBucket: "hermandapp-bed16.firebasestorage.app",
-    messagingSenderId: "326574651601",
-    appId: "1:326574651601:web:fc34c05902155f2b322df0"
-  };
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+interface EditableUser {
+  name: string;
+  userName: string;
+  email: string;
+  phone: string;
+  avatar: string;
+}
 
 const Dashboard = () => {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [userData, setUserData] = useState<EditableUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
         router.push('/login');
       } else {
-        setUser(currentUser);
+        try {
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+          const data = userDoc.exists() ? userDoc.data() : {};
+          setUserData({
+            name: data.name || currentUser.displayName || '',
+            userName: data.userName || currentUser.displayName || '',
+            email: currentUser.email || '',
+            phone: data.phone || '',
+            avatar: data.avatar || currentUser.photoURL || '/user-avatar.png',
+          });
+        } catch (error) {
+          console.error("Error al cargar los datos del usuario:", error);
+          setUserData({
+            name: currentUser.displayName || '',
+            userName: currentUser.displayName || '',
+            email: currentUser.email || '',
+            phone: '',
+            avatar: currentUser.photoURL || '/user-avatar.png',
+          });
+        } finally {
+          setLoading(false);
+        }
       }
     });
     return () => unsubscribe();
   }, [router]);
 
-  const handleLogout = async () => {
-    await signOut(auth);
-    router.push('/login');
-  };
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+        <p>Cargando panel...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
       <aside className="w-64 bg-white shadow p-4 flex flex-col gap-4">
         <h2 className="text-xl font-bold text-red-700">HERMANDAPP</h2>
         <nav className="space-y-3">
@@ -60,55 +81,15 @@ const Dashboard = () => {
         </nav>
       </aside>
 
-      {/* Main panel */}
       <div className="flex-1 flex flex-col">
-        {/* Top bar */}
-        <header className="bg-red-700 text-white px-6 py-4 flex justify-between items-center shadow">
-          <div></div>
-          <div className="flex items-center gap-4">
-            {user && (
-              <div className="relative">
-          <button
-            className="text-sm flex items-center gap-2 focus:outline-none"
-            onClick={() => setShowDropdown((prev) => !prev)}
-          >
-            {user.displayName || user.email}
-            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-          {showDropdown && (
-            <div className="absolute right-0 mt-2 w-40 bg-white text-gray-800 rounded shadow z-10">
-              <button
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                onClick={() => {
-            setShowDropdown(false);
-            router.push('/profile');
-                }}
-              >
-                Mi perfil
-              </button>
-              <button
-                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                onClick={() => {
-            setShowDropdown(false);
-            handleLogout();
-                }}
-              >
-                Cerrar sesión
-              </button>
-            </div>
+        <header className="bg-red-700 text-white px-6 py-4 flex justify-end items-center shadow">
+          {userData && (
+            <UserDropdown user={{ photoURL: userData.avatar, displayName: userData.userName, email: userData.email }} />
           )}
-              </div>
-            )}
-          </div>
         </header>
 
-        {/* Content */}
         <main className="p-6 overflow-auto">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">Bienvenido a <span className="text-red-700">HERMANDAPP</span></h1>
-
-          {/* Dashboard previews */}
           <div className="flex justify-center items-center h-full">
             <Image src={dashboardPreview} alt="Panel administración" className="rounded w-full h-full object-cover" />
           </div>
