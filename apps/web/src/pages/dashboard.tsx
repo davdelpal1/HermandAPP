@@ -5,7 +5,8 @@ import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 import Image from 'next/image';
 import dashboardPreview from '../assets/images/dashboard-preview.png';
-import UserDropdown from '@/components/UserDropdown';
+import UserDropdown from '@/components/UserDropdown';import Link from 'next/link';
+
 
 interface EditableUser {
   name: string;
@@ -66,18 +67,18 @@ const Dashboard = () => {
         <h2 className="text-xl font-bold text-red-700">HERMANDAPP</h2>
         <nav className="space-y-3">
           <p className="font-semibold text-sm text-gray-700">GENERAL</p>
-          <SidebarItem icon="👤" label="Hermanos" />
-          <SidebarItem icon="🧑‍🤝‍🧑" label="Colaboradores" />
-          <SidebarItem icon="👨‍👩‍👧‍👦" label="Familias y grupos" />
-          <SidebarItem icon="📇" label="Contactos" />
-          <SidebarItem icon="📛" label="Titulares" />
-          <SidebarItem icon="🎖️" label="Junta de gobierno" />
+          <SidebarItem icon="👤" label="Hermanos" href="/hermanos" />
+          <SidebarItem icon="🧑‍🤝‍🧑" label="Colaboradores" href="/colaboradores" />
+          <SidebarItem icon="👨‍👩‍👧‍👦" label="Familias y grupos" href="/familias" />
+          <SidebarItem icon="📇" label="Contactos" href="/contactos" />
+          <SidebarItem icon="📛" label="Titulares" href="/titulares" />
+          <SidebarItem icon="🎖️" label="Junta de gobierno" href="/junta" />
           <p className="font-semibold text-sm text-gray-700 mt-4">TESORERÍA</p>
-          <SidebarItem icon="💰" label="Tesorería" />
-          <SidebarItem icon="🎫" label="Lotería" />
+          <SidebarItem icon="💰" label="Tesorería" href="/tesoreria" />
+          <SidebarItem icon="🎫" label="Lotería" href="/loteria" />
           <p className="font-semibold text-sm text-gray-700 mt-4">INVENTARIO</p>
-          <SidebarItem icon="👕" label="Túnicas" />
-          <SidebarItem icon="📦" label="Inventario" />
+          <SidebarItem icon="👕" label="Túnicas" href="/tunicas" />
+          <SidebarItem icon="📦" label="Inventario" href="/inventario" />
         </nav>
       </aside>
 
@@ -99,11 +100,11 @@ const Dashboard = () => {
   );
 };
 
-const SidebarItem = ({ icon, label }: { icon: string; label: string }) => (
-  <div className="flex items-center gap-2 text-gray-800 hover:bg-gray-100 rounded px-2 py-1 cursor-pointer">
+const SidebarItem = ({ icon, label, href }: { icon: string; label: string; href: string }) => (
+  <Link href={href} className="flex items-center gap-2 text-gray-800 hover:bg-gray-100 rounded px-2 py-1 cursor-pointer">
     <span>{icon}</span>
     <span>{label}</span>
-  </div>
+  </Link>
 );
 
 export default Dashboard;
