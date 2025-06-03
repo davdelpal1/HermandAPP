@@ -1,48 +1,72 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
 import Link from 'next/link';
-import Image from 'next/image';
+import { collection, onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
 
 export default function ListadoHermanos() {
   const [hermanos, setHermanos] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchHermanos = async () => {
-      try {
-        const snapshot = await getDocs(collection(db, 'hermanos'));
-        const lista = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setHermanos(lista);
-      } catch (error) {
-        console.error('Error al obtener hermanos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchHermanos();
+    const q = query(collection(db, 'hermanos'), orderBy('createdAt', 'desc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setHermanos(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+    return () => unsubscribe();
   }, []);
 
-  if (loading) return <p>Cargando listado...</p>;
+  const handleDelete = async (id: string) => {
+    if (confirm('¿Estás seguro de que quieres eliminar este hermano?')) {
+      await deleteDoc(doc(db, 'hermanos', id));
+    }
+  };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Listado de Hermanos</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {hermanos.length === 0 && <p>No hay hermanos registrados.</p>}
-        {hermanos.map((hermano) => (
-          <div key={hermano.id} className="bg-white rounded p-4 shadow flex flex-col items-center">
-            {hermano.avatarUrl ? (
-              <Image src={hermano.avatarUrl} alt={hermano.name} width={150} height={150} className="rounded" />
-            ) : (
-              <div className="w-[150px] h-[150px] bg-gray-200 rounded flex items-center justify-center">Sin foto</div>
-            )}
-            <h2 className="text-lg font-bold mt-2">{hermano.name} {hermano.lastName}</h2>
-            <p>{hermano.type || 'Tipo no especificado'}</p>
-            <Link href={`/hermanos/${hermano.id}`} className="mt-2 px-4 py-1 bg-red-700 text-white rounded">Ver Detalle</Link>
-          </div>
-        ))}
-      </div>
+    <div className="flex flex-col min-h-screen bg-gray-100 text-black">
+      <header className="bg-red-700 text-white px-6 py-4 shadow flex justify-between items-center">
+        <h1 className="text-2xl font-bold">Listado de Hermanos</h1>
+        <Link href="/hermanos/nuevoHermano" className="bg-white text-red-700 px-4 py-2 rounded">+ Nuevo Hermano</Link>
+      </header>
+
+      <main className="flex-1 p-6">
+        <div className="bg-white p-4 rounded shadow">
+          <h2 className="text-lg font-bold mb-4">Hermanos Registrados</h2>
+          {hermanos.length === 0 ? (
+            <p className="text-gray-500">No hay hermanos registrados.</p>
+          ) : (
+            <table className="w-full border border-gray-300">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="border p-2">Nombre</th>
+                  <th className="border p-2">Apellidos</th>
+                  <th className="border p-2">Email</th>
+                  <th className="border p-2">Tipo</th>
+                  <th className="border p-2">Fecha Alta</th>
+                  <th className="border p-2">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {hermanos.map((hermano) => (
+                  <tr key={hermano.id} className="text-center hover:bg-gray-100">
+                    <td className="border p-2">{hermano.name}</td>
+                    <td className="border p-2">{hermano.lastName}</td>
+                    <td className="border p-2">{hermano.email}</td>
+                    <td className="border p-2">{hermano.type}</td>
+                    <td className="border p-2">{hermano.createdAt?.toDate?.().toLocaleDateString() || '—'}</td>
+                    <td className="border p-2 flex justify-center gap-2">
+                      <Link href={`/hermanos/${hermano.id}`} className="bg-blue-500 text-white px-2 py-1 rounded">Ver</Link>
+                      <button onClick={() => handleDelete(hermano.id)} className="bg-red-500 text-white px-2 py-1 rounded">Eliminar</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </main>
+
+      <footer className="p-4 bg-gray-100 border-t flex justify-end">
+        <p className="text-sm text-gray-600">Total: {hermanos.length} hermanos</p>
+      </footer>
     </div>
   );
 }
