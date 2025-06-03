@@ -81,7 +81,7 @@ const HermanosPage = () => {
           <h1 className="text-3xl font-extrabold text-gray-800 mb-6">Gestión de Hermanos</h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <LinkCard icon={<Users size={40} />} label="Listado" href="/hermanos/listado" description="Consulta el listado completo de hermanos registrados en la hermandad." />
-          <LinkCard icon={<UserPlus size={40} />} label="Nuevo" href="/hermanos/nuevo" description="Agrega un nuevo hermano al sistema, asignándole información básica y de contacto." />
+          <LinkCard icon={<UserPlus size={40} />} label="Nuevo" href="/hermanos/nuevoHermano" description="Agrega un nuevo hermano al sistema, asignándole información básica y de contacto." />
           <LinkCard icon={<UserMinus size={40} />} label="Bajas" href="/hermanos/bajas" description="Gestiona las bajas de hermanos y actualiza su estado." />
           <LinkCard icon={<MessageSquare size={40} />} label="Mensajes" href="/hermanos/mensajes" description="Envía mensajes personalizados a los hermanos o a grupos específicos." />
           <LinkCard icon={<FileText size={40} />} label="Cartas" href="/hermanos/cartas" description="Genera cartas oficiales para notificaciones, comunicaciones y eventos." />

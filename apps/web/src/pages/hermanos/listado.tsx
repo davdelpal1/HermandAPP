@@ -1,35 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import Link from 'next/link';
+import Image from 'next/image';
 
-interface Hermano {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-}
-
-export default function ListadoHermano() {
-  const [hermanos, setHermanos] = useState<Hermano[]>([]);
+export default function ListadoHermanos() {
+  const [hermanos, setHermanos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHermanos = async () => {
       try {
-        const q = query(collection(db, 'hermanos'), orderBy('createdAt', 'desc'));
-        const querySnapshot = await getDocs(q);
-        const hermanosData: Hermano[] = [];
-        querySnapshot.forEach(doc => {
-          const data = doc.data();
-          hermanosData.push({
-            id: doc.id,
-            name: data.name,
-            email: data.email,
-            phone: data.phone
-          });
-        });
-        setHermanos(hermanosData);
+        const snapshot = await getDocs(collection(db, 'hermanos'));
+        const lista = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setHermanos(lista);
       } catch (error) {
         console.error('Error al obtener hermanos:', error);
       } finally {
@@ -39,36 +23,26 @@ export default function ListadoHermano() {
     fetchHermanos();
   }, []);
 
+  if (loading) return <p>Cargando listado...</p>;
+
   return (
-    <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-red-700 text-white px-6 py-4 shadow flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Listado de Hermanos</h1>
-        <Link href="/hermanos" className="text-white underline">Volver a Hermanos</Link>
-      </header>
-      <main className="flex-1 p-6">
-        {loading ? (
-          <p>Cargando...</p>
-        ) : (
-          <table className="table-auto w-full bg-white rounded shadow">
-            <thead>
-              <tr>
-                <th className="border px-4 py-2">Nombre</th>
-                <th className="border px-4 py-2">Correo</th>
-                <th className="border px-4 py-2">Teléfono</th>
-              </tr>
-            </thead>
-            <tbody>
-              {hermanos.map(h => (
-                <tr key={h.id}>
-                  <td className="border px-4 py-2">{h.name}</td>
-                  <td className="border px-4 py-2">{h.email}</td>
-                  <td className="border px-4 py-2">{h.phone || '-'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </main>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4">Listado de Hermanos</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {hermanos.length === 0 && <p>No hay hermanos registrados.</p>}
+        {hermanos.map((hermano) => (
+          <div key={hermano.id} className="bg-white rounded p-4 shadow flex flex-col items-center">
+            {hermano.avatarUrl ? (
+              <Image src={hermano.avatarUrl} alt={hermano.name} width={150} height={150} className="rounded" />
+            ) : (
+              <div className="w-[150px] h-[150px] bg-gray-200 rounded flex items-center justify-center">Sin foto</div>
+            )}
+            <h2 className="text-lg font-bold mt-2">{hermano.name} {hermano.lastName}</h2>
+            <p>{hermano.type || 'Tipo no especificado'}</p>
+            <Link href={`/hermanos/${hermano.id}`} className="mt-2 px-4 py-1 bg-red-700 text-white rounded">Ver Detalle</Link>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

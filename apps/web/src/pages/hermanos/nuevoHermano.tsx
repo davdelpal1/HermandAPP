@@ -22,11 +22,15 @@ export default function NuevoHermano() {
     occupation: '', phone2: '', medalDate: '', parish: '', parishCity: '', baptized: false, dataProtection: false,
     notifications: false, postalMail: false, emails: false,
     // 🟢 Añadido para familias y grupos
-    familyGroups: '', hasTunic: false, tunics: [], quotas: [], outingsPermission: false,
+    familyGroups: '', hasTunic: false, tunics: [] as string[], quotas: [] as string[], outingsPermission: false,
   });
   const [saving, setSaving] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false); // 🟢 Flag para indicar render en cliente
+  const [newTunic, setNewTunic] = useState('');
+  const [newQuota, setNewQuota] = useState('');
+  const [showTunicaForm, setShowTunicaForm] = useState(false);
+  const [showCuotaForm, setShowCuotaForm] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -63,6 +67,21 @@ export default function NuevoHermano() {
     setForm(prev => ({ ...prev, files }));
   };
 
+  const addTunic = () => {
+    if (newTunic.trim()) {
+      setForm(prev => ({ ...prev, tunics: [...prev.tunics, newTunic] }));
+      setNewTunic('');
+    }
+  };
+
+  const addQuota = () => {
+    if (newQuota.trim()) {
+      setForm(prev => ({ ...prev, quotas: [...prev.quotas, newQuota] }));
+      setNewQuota('');
+    }
+  };
+  
+  const selectDeclarante = (opt: string) => setForm(prev => ({ ...prev, declarante: opt }));
   const canSave = form.name && form.lastName && form.gender && form.type;
 
   const handleSave = async () => {
@@ -194,26 +213,86 @@ export default function NuevoHermano() {
           <h2 className="text-lg font-bold mb-2">Salidas</h2>
           <p className="text-sm text-gray-800 mb-1">Datos relativos a las salidas</p>
             <label className="flex items-center gap-2">
-              <input type="checkbox" name="outingsPermission" checked={form.outingsPermission} onChange={handleChange} />
-              Permiso para participar en las salidas
+              <input type="checkbox" />Permiso para participar en las salidas
             </label>
         </div>
 
       <div className="md:col-span-3 bg-white p-4 rounded shadow">
-        <h2 className="text-lg font-bold mb-2">Túnicas</h2>
-        <label className="flex items-center gap-2">
-          <input type="checkbox" name="hasTunic" checked={form.hasTunic} onChange={handleChange} />
-          Túnica/s en propiedad
+        <h2 className="text-lg font-bold">Túnicas</h2>
+        <label className="flex items-center gap-2 my-2">
+          <input type="checkbox" /> Túnica/s en propiedad
         </label>
-          <div className="mt-2">El miembro no tiene túnicas asociadas</div>
-            <button type="button" className="mt-2 text-red-700">+ Añadir túnica</button>
-        </div>
+        <button onClick={() => setShowTunicaForm(true)} className="bg-red-500 text-white px-2 py-1 rounded">+ Añadir Túnica</button>
+        {showTunicaForm && (
+          <div className="border p-2 mt-2">
+            <label>Tipo de Túnica</label>
+            <select className="border p-1 w-full">
+              <option>Selecciona un tipo de túnica</option>
+              <option>Túnica A</option>
+              <option>Túnica B</option>
+            </select>
+          </div>
+        )}
+      </div>
 
-        <div className="md:col-span-3 bg-white p-4 rounded shadow">
-          <h2 className="text-lg font-bold mb-2">Cuotas</h2>
-          <div>El miembro no tiene cuotas asociadas</div>
-          <button type="button" className="mt-2 text-red-700">+ Añadir cuota</button>
+      <div className="md:col-span-3 bg-white p-4 rounded shadow">
+        <h2 className="text-lg font-bold">Cuotas</h2>
+        <button onClick={() => setShowCuotaForm(true)} className="bg-red-500 text-white px-2 py-1 rounded">+ Añadir Cuota</button>
+        {showCuotaForm && (
+          <div className="border p-2 mt-2">
+            <label>Cuota</label>
+            <select className="border p-1 w-full">
+              <option>Selecciona una cuota</option>
+              <option>Cuota A</option>
+              <option>Cuota B</option>
+            </select>
+          </div>
+        )}
+      </div>
+      <div className="md:col-span-3 bg-white p-4 rounded shadow">
+        <h2 className="text-lg font-bold">Tesorería</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label>Método de pago</label>
+            <select className="border p-1 w-full">
+              <option>Selecciona un método</option>
+              <option>Transferencia</option>
+              <option>Recibo</option>
+            </select>
+          </div>
+          <div>
+            <label>Dirección de pago</label>
+            <input className="border p-1 w-full" placeholder="Dirección" />
+          </div>
+          <div>
+            <label>IBAN</label>
+            <input className="border p-1 w-full" placeholder="IBAN" />
+          </div>
+          <div>
+            <label>Código BIC</label>
+            <input className="border p-1 w-full" placeholder="BIC" />
+          </div>
+          <div>
+            <label>Nombre titular</label>
+            <input className="border p-1 w-full" placeholder="Nombre" />
+          </div>
+          <div>
+            <label>NIF titular</label>
+            <input className="border p-1 w-full" placeholder="NIF" />
+          </div>
+          <div>
+            <label>Fecha autorización</label>
+            <input type="date" className="border p-1 w-full" />
+          </div>
         </div>
+      </div>
+      <div className="md:col-span-3 bg-white p-4 rounded shadow">
+        <h2 className="text-lg font-bold">Declarante:</h2>
+        <p className="text-sm text-gray-800 mb-1">Persona asociada a los pagos de tarjetas/papeletas, cuotas y los movimientos de tipo donativo que aparecerá en el Modelo 182 - "Declaración Informativa. Donativos, donaciones y aportaciones recibidas".</p>
+        {['El propio miembro', 'Tutor legal', 'Titular bancario', 'Otro', 'Nadie'].map(opt => (
+        <button key={opt} onClick={() => selectDeclarante(opt)} className={`${form.declarante === opt ? 'bg-red-500 text-white' : 'border'} px-2 py-1`}>{opt}</button>
+        ))}
+      </div>
       </main>
 
       <footer className="p-4 bg-gray-100 border-t flex justify-end">
