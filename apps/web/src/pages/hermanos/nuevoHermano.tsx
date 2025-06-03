@@ -23,14 +23,12 @@ export default function NuevoHermano() {
     notifications: false, postalMail: false, emails: false,
     // 🟢 Añadido para familias y grupos
     familyGroups: '', hasTunic: false, tunics: [] as string[], quotas: [] as string[], outingsPermission: false,
+    paymentMethod: '', paymentAddress: '', paymentIban: '', paymentBic: '', paymentHolder: '', paymentNif: '',
+    paymentDate: '', declarante: ''
   });
   const [saving, setSaving] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false); // 🟢 Flag para indicar render en cliente
-  const [newTunic, setNewTunic] = useState('');
-  const [newQuota, setNewQuota] = useState('');
-  const [showTunicaForm, setShowTunicaForm] = useState(false);
-  const [showCuotaForm, setShowCuotaForm] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -51,8 +49,8 @@ export default function NuevoHermano() {
   }, [previewUrl]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,17 +66,35 @@ export default function NuevoHermano() {
   };
 
   const addTunic = () => {
-    if (newTunic.trim()) {
-      setForm(prev => ({ ...prev, tunics: [...prev.tunics, newTunic] }));
-      setNewTunic('');
-    }
+    setForm(prev => ({ ...prev, tunics: [...prev.tunics, ''] }));
+  };
+
+  const updateTunic = (index: number, value: string) => {
+    const newTunics = [...form.tunics];
+    newTunics[index] = value;
+    setForm(prev => ({ ...prev, tunics: newTunics }));
+  };
+
+  const removeTunic = (index: number) => {
+    const newTunics = [...form.tunics];
+    newTunics.splice(index, 1);
+    setForm(prev => ({ ...prev, tunics: newTunics }));
   };
 
   const addQuota = () => {
-    if (newQuota.trim()) {
-      setForm(prev => ({ ...prev, quotas: [...prev.quotas, newQuota] }));
-      setNewQuota('');
-    }
+    setForm(prev => ({ ...prev, quotas: [...prev.quotas, ''] }));
+  };
+
+  const updateQuota = (index: number, value: string) => {
+    const newQuotas = [...form.quotas];
+    newQuotas[index] = value;
+    setForm(prev => ({ ...prev, quotas: newQuotas }));
+  };
+
+  const removeQuota = (index: number) => {
+    const newQuotas = [...form.quotas];
+    newQuotas.splice(index, 1);
+    setForm(prev => ({ ...prev, quotas: newQuotas }));
   };
   
   const selectDeclarante = (opt: string) => setForm(prev => ({ ...prev, declarante: opt }));
@@ -116,6 +132,8 @@ export default function NuevoHermano() {
         occupation: '', phone2: '', medalDate: '', parish: '', parishCity: '', baptized: false, dataProtection: false,
         notifications: false, postalMail: false, emails: false,
         familyGroups: '', hasTunic: false, tunics: [], quotas: [], outingsPermission: false,
+        paymentMethod: '', paymentAddress: '', paymentIban: '', paymentBic: '', paymentHolder: '', paymentNif: '',
+        paymentDate: '', declarante: ''
       });
       setPreviewUrl(null);
     } catch (error) {
@@ -220,70 +238,47 @@ export default function NuevoHermano() {
       <div className="md:col-span-3 bg-white p-4 rounded shadow">
         <h2 className="text-lg font-bold">Túnicas</h2>
         <label className="flex items-center gap-2 my-2">
-          <input type="checkbox" /> Túnica/s en propiedad
+          <input type="checkbox" name="hasTunic" checked={form.hasTunic} onChange={handleChange} /> Túnica/s en propiedad
         </label>
-        <button onClick={() => setShowTunicaForm(true)} className="bg-red-500 text-white px-2 py-1 rounded">+ Añadir Túnica</button>
-        {showTunicaForm && (
-          <div className="border p-2 mt-2">
-            <label>Tipo de Túnica</label>
-            <select className="border p-1 w-full">
-              <option>Selecciona un tipo de túnica</option>
+        {form.tunics.map((tunic, index) => (
+          <div key={index} className="flex gap-2 items-center border p-2 my-2">
+            <select value={tunic} onChange={e => updateTunic(index, e.target.value)} className="border p-1 flex-1">
+              <option value="">Selecciona un tipo de túnica</option>
               <option>Túnica A</option>
               <option>Túnica B</option>
             </select>
+            <button onClick={() => removeTunic(index)} className="text-red-500">🗑</button>
           </div>
-        )}
+        ))}
+        <button onClick={addTunic} className="bg-red-500 text-white px-2 py-1 rounded">+ Añadir Túnica</button>
       </div>
 
       <div className="md:col-span-3 bg-white p-4 rounded shadow">
         <h2 className="text-lg font-bold">Cuotas</h2>
-        <button onClick={() => setShowCuotaForm(true)} className="bg-red-500 text-white px-2 py-1 rounded">+ Añadir Cuota</button>
-        {showCuotaForm && (
-          <div className="border p-2 mt-2">
-            <label>Cuota</label>
-            <select className="border p-1 w-full">
-              <option>Selecciona una cuota</option>
+        {form.quotas.map((quota, index) => (
+          <div key={index} className="flex gap-2 items-center border p-2 my-2">
+            <select value={quota} onChange={e => updateQuota(index, e.target.value)} className="border p-1 flex-1">
+              <option value="">Selecciona una cuota</option>
               <option>Cuota A</option>
               <option>Cuota B</option>
             </select>
+            <button onClick={() => removeQuota(index)} className="text-red-500">🗑</button>
           </div>
-        )}
+        ))}
+        <button onClick={addQuota} className="bg-red-500 text-white px-2 py-1 rounded">+ Añadir Cuota</button>
       </div>
       <div className="md:col-span-3 bg-white p-4 rounded shadow">
         <h2 className="text-lg font-bold">Tesorería</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label>Método de pago</label>
-            <select className="border p-1 w-full">
-              <option>Selecciona un método</option>
-              <option>Transferencia</option>
-              <option>Recibo</option>
-            </select>
-          </div>
-          <div>
-            <label>Dirección de pago</label>
-            <input className="border p-1 w-full" placeholder="Dirección" />
-          </div>
-          <div>
-            <label>IBAN</label>
-            <input className="border p-1 w-full" placeholder="IBAN" />
-          </div>
-          <div>
-            <label>Código BIC</label>
-            <input className="border p-1 w-full" placeholder="BIC" />
-          </div>
-          <div>
-            <label>Nombre titular</label>
-            <input className="border p-1 w-full" placeholder="Nombre" />
-          </div>
-          <div>
-            <label>NIF titular</label>
-            <input className="border p-1 w-full" placeholder="NIF" />
-          </div>
-          <div>
-            <label>Fecha autorización</label>
-            <input type="date" className="border p-1 w-full" />
-          </div>
+          <div><label>Método de pago</label><select name="paymentMethod" value={form.paymentMethod} onChange={handleChange} className="border p-1 w-full"><option>Selecciona un método</option><option>Transferencia</option><option>Recibo</option></select></div>
+          <div><label>Dirección de pago</label><input name="paymentAddress" value={form.paymentAddress} onChange={handleChange} className="border p-1 w-full" placeholder="Dirección" /></div>
+          <div><label>IBAN</label><input name="paymentIban" value={form.paymentIban} onChange={handleChange} className="border p-1 w-full" placeholder="IBAN" /></div>
+          <div><label>Código BIC</label><input name="paymentBic" value={form.paymentBic} onChange={handleChange} className="border p-1 w-full" placeholder="BIC" /></div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+          <div><label>Nombre titular</label><input name="paymentHolder" value={form.paymentHolder} onChange={handleChange} className="border p-1 w-full" placeholder="Nombre" /></div>
+          <div><label>NIF titular</label><input name="paymentNif" value={form.paymentNif} onChange={handleChange} className="border p-1 w-full" placeholder="NIF" /></div>
+          <div><label>Fecha autorización</label><input name="paymentDate" type="date" value={form.paymentDate} onChange={handleChange} className="border p-1 w-full" /></div>
         </div>
       </div>
       <div className="md:col-span-3 bg-white p-4 rounded shadow">
